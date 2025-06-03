@@ -1,0 +1,231 @@
+:root {
+    --primary-color: #2a5c82; /* Primary brand color */
+    --secondary-color: #e74c3c; /* Secondary accent color */
+    --background: #f8f9fa; /* Background color */
+    --text-color: #333; /* Primary text color */
+    --font-family: 'Poppins', sans-serif; /* Font family */
+    --font-size: 16px; /* Base font size */
+    --font-size-large: 20px; /* Large font size */
+    --font-size-small: 14px; /* Small font size */
+    --border-radius: 10px; /* Default border radius */
+    --box-shadow: 0 2px 15px rgba(0,0,0,0.1); /* Default box shadow */
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    margin: 0;
+    background-color: var(--background);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Navigation */
+.navbar {
+    background: var(--primary-color);
+    padding: 1rem 5%;
+    position: fixed;
+    width: 90%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: #ccc;
+}
+
+/* Main Container */
+.container {
+    margin-top: 70px;
+    padding: 2rem 5%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Data Collection Section */
+.data-section {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.data-section h2 {
+    margin-top: 0;
+    font-size: var(--font-size-large);
+}
+
+.patient-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: var(--font-size-small);
+}
+
+.input-group input[type="text"], .input-group input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    width: 100%;
+}
+
+.input-group input[type="file"] {
+    padding: 0.5rem 0;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #23527c;
+}
+
+/* Image Preprocessing Display */
+.image-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.image-box {
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.image-placeholder {
+    height: 300px;
+    background: #ddd;
+    border-radius: var(--border-radius);
+}
+
+/* AI Results Visualization */
+.severity-indicator {
+    background: #f1f1f1;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.severity-bar {
+    height: 20px;
+    background: #ddd;
+    border-radius: var(--border-radius);
+    position: relative;
+}
+
+.severity-fill {
+    background: linear-gradient(90deg, #4CAF50 0%, #ffeb3b 50%, #f44336 100%);
+    height: 100%;
+    border-radius: var(--border-radius);
+}
+
+/* Doctor's Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.main-viewer {
+    background: #2c3e50;
+    height: 600px;
+    border-radius: var(--border-radius);
+    position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .image-comparison {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Footer */
+.footer {
+    background: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.footer p {
+    margin: 0;
+    font-size: var(--font-size-small);
+}
+
+/* Additional Styles */
+.card {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.card li {
+    margin-bottom: 0.5rem;
+}
+
+.card li::before {
+    content: "\2022";
+    margin-right: 0.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}

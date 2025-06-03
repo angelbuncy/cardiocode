@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Heart Diagnosis</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #e0f7fa, #80deea);
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 500px;
+            margin: 5% auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #00796b;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            font-weight: bold;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .step.active {
+            opacity: 1;
+            background: #004d40;
+            transform: scale(1.2);
+        }
+
+        .info {
+            text-align: left;
+            padding: 20px;
+            width: 100%;
+        }
+
+        input, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            border-color: #00796b;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #00796b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background: #004d40;
+            transform: scale(1.05);
+        }
+
+        .save-btn {
+            background: #2e7d32;
+            margin: 10px 0;
+        }
+
+        .save-btn:hover {
+            background: #1b5e20;
+        }
+
+        .analyse-btn {
+            background: #d32f2f;
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .analyse-btn:hover {
+            background: #b71c1c;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #f9f9f9;
+            text-align: left;
+        }
+
+        .result-section {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .high-risk {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .normal-risk {
+            color: #00796b;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.3);
+            border-radius: 50%;
+            border-top-color: #00796b;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="container" id="signup-container">
+        <h2>Doctor Login</h2>
+        <input type="text" id="name" placeholder="Enter Name" required>
+        <input type="text" id="phone" placeholder="Enter Phone Number" required>
+        <button class="btn" onclick="sendOTP()">Send OTP</button>
+    </div>
+    
+    <div class="container hidden" id="otp-container">
+        <h2>Enter OTP</h2>
+        <input type="text" id="otp" placeholder="Enter OTP">
+        <button class="btn" onclick="verifyOTP()">Verify OTP</button>
+    </div>
+    
+    <div class="container hidden" id="dashboard">
+        <h2>Welcome to Dashboard</h2>
+        <p id="userName"></p>
+        <button class="btn" onclick="startDiagnosis()">Start Diagnosis</button>
+    </div>
+    
+    <!-- Main Diagnosis Container -->
+    <div class="container hidden" id="diagnosis-container">
+        <h1>AI Heart Diagnosis ❤</h1>
+        <div class="progress">
+            <div class="step active" id="step1">1</div>
+            <div>—</div>
+            <div class="step" id="step2">2</div>
+            <div>—</div>
+            <div class="step" id="step3">3</div>
+            <div>—</div>
+            <div class="step" id="step4">4</div>
+        </div>
+        <div class="info" id="stepContent"></div>
+        <div class="nav-buttons">
+            <button class="btn" onclick="prevStep()">← Previous</button>
+            <button class="btn" onclick="nextStep()">Next →</button>
+        </div>
+        <button class="btn analyse-btn" id="analyseButton" onclick="analyzeAllData()">Analyse</button>
+        
+        <!-- Results section -->
+        <div id="results" class="hidden">
+            <h2>Diagnosis Results</h2>
+            <div id="patientInfo" class="result-section"></div>
+            <div id="ecgResults" class="result-section"></div>
+            <div id="angiogramResults" class="result-section"></div>
+            <div id="bloodTestResults" class="result-section"></div>
+            <div id="overallAssessment"></div>
+        </div>
+    </div>
+    
+    <script>
+        // In-memory storage for session data
+        let sessionData = {
+            doctor_name: '',
+            doctor_phone: '',
+            patient_name: '',
+            patient_id: '',
+            patient_age: '',
+            ecg_analyzed: false,
+            angiogram_analyzed: false,
+            bloodTest_analyzed: false,
+            ecg_filename: '',
+            angiogram_filename: '',
+            bloodTest_filename: '',
+            ecg_results: null,
+            angiogram_results: null,
+            bloodTest_results: null
+        };
+
+        // Authentication logic
+        let generatedOTP;
+        
+        function sendOTP() {
+            let name = document.getElementById("name").value;
+            let phone = document.getElementById("phone").value;
+            if (!name || !phone) {
+                alert("Please enter valid details!");
+                return;
+            }
+            generatedOTP = Math.floor(100000 + Math.random() * 900000); // Mocked OTP
+            alert("Your OTP is: " + generatedOTP); // In real implementation, send via SMS
+            sessionData.doctor_name = name;
+            sessionData.doctor_phone = phone;
+            document.getElementById("signup-container").classList.add("hidden");
+            document.getElementById("otp-container").classList.remove("hidden");
+        }
+        
+        function verifyOTP() {
+            let otpInput = document.getElementById("otp").value;
+            if (otpInput == generatedOTP) {
+                alert("OTP Verified Successfully!");
+                document.getElementById("otp-container").classList.add("hidden");
+                document.getElementById("dashboard").classList.remove("hidden");
+                document.getElementById("userName").innerText = "Hello, Dr. " + sessionData.doctor_name + "!";
+            } else {
+                alert("Incorrect OTP. Please try again.");
+            }
+        }
+        
+        function startDiagnosis() {
+            document.getElementById("dashboard").classList.add("hidden");
+            document.getElementById("diagnosis-container").classList.remove("hidden");
+            updateStepUI();
+        }
+        
+        // Diagnosis flow logic
+        let currentStep = 1;
+        let analysisData = {
+            patient: {},
+            ecg: {},
+            angiogram: {},
+            bloodTest: {}
+        };
+        
+        const steps = [
+            `<h2>Patient Info</h2>
+             <label>Name:</label><input type='text' id='patientName' placeholder='Enter name'>
+             <label>ID:</label><input type='text' id='patientId' placeholder='Enter ID'>
+             <label>Age:</label><input type='number' id='patientAge' placeholder='Enter Age'>
+             <button class="btn save-btn" onclick="saveStepData()">Save</button>
+             <p id="saveMessage"></p>`,
+    
+            `<h2>Angiogram CT Scan</h2>
+             <p>Upload angiogram scan here.</p>
+             <input type='file' id='angiogramFile' accept='image/*, .pdf' onchange='previewFile(event, "angiogram")'>
+             <p id='angiogramPreview'></p>
+             <button class="btn save-btn" onclick="uploadFile('angiogram')">Upload</button>
+             <p id="angiogramUploadStatus"></p>`,
+    
+            `<h2>ECG Report</h2>
+             <p>Upload ECG report here.</p>
+             <input type='file' id='ecgFile' accept='image/*, .pdf' onchange='previewFile(event, "ecg")'>
+             <p id='ecgPreview'></p>
+             <button class="btn save-btn" onclick="uploadFile('ecg')">Upload</button>
+             <p id="ecgUploadStatus"></p>`,
+    
+            `<h2>Blood Test Report</h2>
+             <p>Upload blood test report here.</p>
+             <input type='file' id='bloodTestFile' accept='image/*, .pdf' onchange='previewFile(event, "bloodTest")'>
+             <p id='bloodTestPreview'></p>
+             <button class="btn save-btn" onclick="uploadFile('bloodTest')">Upload</button>
+             <p id="bloodTestUploadStatus"></p>`
+        ];
+    
+        function updateStepUI() {
+            document.getElementById("stepContent").innerHTML = steps[currentStep - 1];
+    
+            document.querySelectorAll(".step").forEach((el, index) => {
+                el.classList.toggle("active", index + 1 === currentStep);
+            });
+    
+            document.getElementById("analyseButton").style.display = currentStep === 4 ? 'block' : 'none';
+    
+            restoreData();
+        }
+    
+        function nextStep() {
+            if (currentStep < 4) {
+                currentStep++;
+                updateStepUI();
+            }
+        }
+    
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+    
+        function saveStepData() {
+            const nameField = document.getElementById("patientName");
+            const idField = document.getElementById("patientId");
+            const ageField = document.getElementById("patientAge");
+    
+            if (nameField && idField && ageField) {
+                sessionData.patient_name = nameField.value;
+                sessionData.patient_id = idField.value;
+                sessionData.patient_age = ageField.value;
+                
+                analysisData.patient = {
+                    name: nameField.value,
+                    id: idField.value,
+                    age: ageField.value
+                };
+                
+                document.getElementById("saveMessage").innerText = "Patient data saved successfully ✅";
+                setTimeout(() => document.getElementById("saveMessage").innerText = "", 2000);
+            }
+        }
+    
+        function restoreData() {
+            if (document.getElementById("patientName") && currentStep === 1) {
+                document.getElementById("patientName").value = sessionData.patient_name || "";
+                document.getElementById("patientId").value = sessionData.patient_id || "";
+                document.getElementById("patientAge").value = sessionData.patient_age || "";
+            }
+    
+            // Restore file upload statuses
+            ["angiogram", "ecg", "bloodTest"].forEach(type => {
+                if (sessionData[type + "_analyzed"] && document.getElementById(type + "Preview")) {
+                    document.getElementById(type + "Preview").innerText = `Analyzed: ${sessionData[type + "_filename"]}`;
+                    document.getElementById(type + "UploadStatus").innerHTML = "✅ Analyzed successfully";
+                }
+            });
+        }
+    
+        function previewFile(event, type) {
+            const file = event.target.files[0];
+            if (file && document.getElementById(type + 'Preview')) {
+                document.getElementById(type + 'Preview').innerText = `Selected: ${file.name}`;
+            }
+        }
+    
+        // This function simulates uploading a file to the backend
+        function uploadFile(type) {
+            const fileInput = document.getElementById(type + 'File');
+            const statusElement = document.getElementById(type + 'UploadStatus');
+            
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert("Please select a file first!");
+                return;
+            }
+            
+            statusElement.innerHTML = `<span>Analyzing...</span><div class="loading"></div>`;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Simulate backend analysis results
+                let analysisResult;
+                
+                if (type === 'ecg') {
+                    analysisResult = {
+                        "Heart Rate": Math.floor(Math.random() * 40) + 60, // Random between 60-100
+                        "Rhythm": Math.random() > 0.7 ? "Tachycardia" : "Normal",
+                        "Risk": Math.random() > 0.7 ? "Potentially Dangerous" : "Normal"
+                    };
+                    analysisData.ecg = analysisResult;
+                } 
+                else if (type === 'angiogram') {
+                    const blockagePercentage = Math.floor(Math.random() * 80) + 10;
+                    let condition;
+                    
+                    if (blockagePercentage <= 25) condition = "Normal / Mild";
+                    else if (blockagePercentage <= 50) condition = "Moderate narrowing";
+                    else if (blockagePercentage <= 70) condition = "Significant stenosis";
+                    else condition = "Critical blockage";
+                    
+                    analysisResult = {
+                        "Condition": condition,
+                        "Blockage": blockagePercentage
+                    };
+                    analysisData.angiogram = analysisResult;
+                } 
+                else if (type === 'bloodTest') {
+                    const troponin = Math.random() * 0.8;
+                    const ldl = Math.random() * 150 + 50;
+                    
+                    analysisResult = {
+                        "Troponin": troponin.toFixed(2),
+                        "LDL": ldl.toFixed(1),
+                        "Risk": troponin > 0.4 ? "High risk of myocardial damage" : "Normal",
+                        "LDL Risk": ldl > 100 ? "High LDL level" : "Normal"
+                    };
+                    analysisData.bloodTest = analysisResult;
+                }
+                
+                sessionData[type + '_analyzed'] = true;
+                sessionData[type + '_filename'] = fileInput.files[0].name;
+                sessionData[type + '_results'] = analysisResult;
+                
+                statusElement.innerHTML = "✅ Analyzed successfully";
+            }, 2000);
+        }
+        
+        function analyzeAllData() {
+            // Check if all data is available
+            if (!sessionData.ecg_analyzed || 
+                !sessionData.angiogram_analyzed || 
+                !sessionData.bloodTest_analyzed) {
+                alert("Please upload and analyze all required reports first!");
+                return;
+            }
+            
+            // Display the results
+            document.getElementById("results").classList.remove("hidden");
+            document.getElementById("analyseButton").style.display = "none";
+            
+            // Patient Info
+            const patientInfo = document.getElementById("patientInfo");
+            patientInfo.innerHTML = `
+                <h3>Patient Information</h3>
+                <p><strong>Name:</strong> ${analysisData.patient.name || sessionData.patient_name}</p>
+                <p><strong>ID:</strong> ${analysisData.patient.id || sessionData.patient_id}</p>
+                <p><strong>Age:</strong> ${analysisData.patient.age || sessionData.patient_age}</p>
+            `;
+            
+            // ECG Results
+            const ecgData = analysisData.ecg || sessionData.ecg_results;
+            const ecgResults = document.getElementById("ecgResults");
+            ecgResults.innerHTML = `
+                <h3>ECG Analysis</h3>
+                <p><strong>Heart Rate:</strong> ${ecgData["Heart Rate"]} bpm</p>
+                <p><strong>Rhythm:</strong> ${ecgData["Rhythm"]}</p>
+                <p><strong>Risk Assessment:</strong> <span class="${ecgData["Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${ecgData["Risk"]}</span></p>
+            `;
+            
+            // Angiogram Results
+            const angiogramData = analysisData.angiogram || sessionData.angiogram_results;
+            const angiogramResults = document.getElementById("angiogramResults");
+            angiogramResults.innerHTML = `
+                <h3>Angiogram Analysis</h3>
+                <p><strong>Condition:</strong> ${angiogramData["Condition"]}</p>
+                <p><strong>Blockage:</strong> ${angiogramData["Blockage"]}%</p>
+                <p><strong>Risk Assessment:</strong> <span class="${angiogramData["Blockage"] <= 50 ? "normal-risk" : "high-risk"}">${angiogramData["Blockage"] > 70 ? "High Risk" : angiogramData["Blockage"] > 50 ? "Moderate Risk" : "Low Risk"}</span></p>
+            `;
+            
+            // Blood Test Results
+            const bloodData = analysisData.bloodTest || sessionData.bloodTest_results;
+            const bloodTestResults = document.getElementById("bloodTestResults");
+            bloodTestResults.innerHTML = `
+                <h3>Blood Test Analysis</h3>
+                <p><strong>Troponin:</strong> ${bloodData["Troponin"]} ng/mL</p>
+                <p><strong>LDL Cholesterol:</strong> ${bloodData["LDL"]} mg/dL</p>
+                <p><strong>Troponin Risk:</strong> <span class="${bloodData["Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${bloodData["Risk"]}</span></p>
+                <p><strong>LDL Risk:</strong> <span class="${bloodData["LDL Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${bloodData["LDL Risk"]}</span></p>
+            `;
+            
+            // Overall Assessment
+            const overallRisk = calculateOverallRisk(ecgData, angiogramData, bloodData);
+            const overallAssessment = document.getElementById("overallAssessment");
+            overallAssessment.innerHTML = `
+                <h3>Overall Assessment</h3>
+                <p><strong>Risk Level:</strong> <span class="${overallRisk.level === "Low" ? "normal-risk" : "high-risk"}">${overallRisk.level} Risk</span></p>
+                <p><strong>Recommendation:</strong> ${overallRisk.recommendation}</p>
+                <p><strong>Follow-up:</strong> ${overallRisk.followUp}</p>
+            `;
+        }
+        
+        function calculateOverallRisk(ecgData, angiogramData, bloodData) {
+            // Calculate risk score based on all factors
+            let riskScore = 0;
+            
+            // ECG factors
+            if (ecgData["Risk"] !== "Normal") riskScore += 2;
+            if (ecgData["Rhythm"] === "Tachycardia") riskScore += 1;
+            
+            // Angiogram factors
+            if (angiogramData["Blockage"] > 70) riskScore += 3;
+            else if (angiogramData["Blockage"] > 50) riskScore += 2;
+            else if (angiogramData["Blockage"] > 25) riskScore += 1;
+            
+            // Blood test factors
+            if (bloodData["Risk"] !== "Normal") riskScore += 3;
+            if (bloodData["LDL Risk"] !== "Normal") riskScore += 1;
+            
+            // Determine overall risk level
+            let riskLevel, recommendation, followUp;
+            
+            if (riskScore >= 6) {
+                riskLevel = "High";
+                recommendation = "Immediate medical intervention is recommended. Consider cardiac catheterization and possible stent placement.";
+                followUp = "Immediate cardiology consultation and hospital admission.";
+            } else if (riskScore >= 3) {
+                riskLevel = "Moderate";
+                recommendation = "Medical management with close monitoring. Consider medication adjustments and lifestyle modifications.";
+                followUp = "Schedule follow-up with cardiology within 1-2 weeks.";
+            } else {
+                riskLevel = "Low";
+                recommendation = "Continue current medical management. Emphasize heart-healthy lifestyle.";
+                followUp = "Regular check-up in 3-6 months.";
+            }
+            
+            return {
+                level: riskLevel,
+                recommendation: recommendation,
+                followUp: followUp
+            };
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // App starts with login screen
+            console.log("AI Heart Diagnosis App Loaded");
+        });
+    </script>
+</body>
+</html>
