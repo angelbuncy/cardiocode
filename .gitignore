@@ -1,0 +1,20 @@
+# Environments
+venv/
+env/
+.env
+
+# Firebase Credentials (CRITICAL - DO NOT COMMIT)
+firebase-credentials.json
+*-credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Models (Optional: ignore large pkl files if you don't want them in git)
+# app/ml_models/*.pkl
+
+# OS Files
+.DS_Store
+Thumbs.db

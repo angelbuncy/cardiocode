@@ -3,529 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Heart Diagnosis</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(120deg, #e0f7fa, #80deea);
-            color: #333;
-            text-align: center;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 500px;
-            margin: 5% auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .progress {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .step {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #00796b;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 10px;
-            font-weight: bold;
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-
-        .step.active {
-            opacity: 1;
-            background: #004d40;
-            transform: scale(1.2);
-        }
-
-        .info {
-            text-align: left;
-            padding: 20px;
-            width: 100%;
-        }
-
-        input, input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        
-        input:focus {
-            border-color: #00796b;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .btn {
-            background: #00796b;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-
-        .btn:hover {
-            background: #004d40;
-            transform: scale(1.05);
-        }
-
-        .analyse-btn {
-            background: #d32f2f;
-            display: none;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .analyse-btn:hover {
-            background: #b71c1c;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        #results {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #f9f9f9;
-            text-align: left;
-        }
-
-        .result-section {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .high-risk {
-            color: #d32f2f;
-            font-weight: bold;
-        }
-
-        .normal-risk {
-            color: #00796b;
-            font-weight: bold;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0,0,0,0.3);
-            border-radius: 50%;
-            border-top-color: #00796b;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    <title>CardioCode | AI Triage</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Login Container -->
-    <div class="container" id="signup-container">
-        <h2>Doctor Login</h2>
-        <input type="text" id="name" placeholder="Enter Name" required>
-        <input type="text" id="phone" placeholder="Enter Phone Number" required>
-        <button class="btn" onclick="sendOTP()">Send OTP</button>
-    </div>
-    
-    <div class="container hidden" id="otp-container">
-        <h2>Enter OTP</h2>
-        <input type="text" id="otp" placeholder="Enter OTP">
-        <button class="btn" onclick="verifyOTP()">Verify OTP</button>
-    </div>
-    
-    <div class="container hidden" id="dashboard">
-        <h2>Welcome to Dashboard</h2>
-        <p id="userName"></p>
-        <button class="btn" onclick="startDiagnosis()">Start Diagnosis</button>
-    </div>
-    
-    <!-- Main Diagnosis Container -->
-    <div class="container hidden" id="diagnosis-container">
-        <h1>AI Heart Diagnosis ❤</h1>
-        <div class="progress">
-            <div class="step active" id="step1">1</div>
-            <div>—</div>
-            <div class="step" id="step2">2</div>
-            <div>—</div>
-            <div class="step" id="step3">3</div>
-            <div>—</div>
-            <div class="step" id="step4">4</div>
+    <header class="header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            CardioCode
         </div>
-        <div class="info" id="stepContent"></div>
-        <div class="nav-buttons">
-            <button class="btn" onclick="prevStep()">← Previous</button>
-            <button class="btn" onclick="nextStep()">Next →</button>
+        <div class="header-center">Medical Tech Demo</div>
+        <div class="header-right">
+            <span class="time" id="clock"></span>
+            <button class="menu-btn">Menu</button>
         </div>
-        <button class="btn analyse-btn" id="analyseButton" onclick="analyzeAllData()">Analyse</button>
+    </header>
+
+    <main class="hero">
+        <div class="bg-text">CARDIOCODE</div>
         
-        <!-- Results section -->
-        <div id="results" class="hidden">
-            <h2>Diagnosis Results</h2>
-            <div id="patientInfo" class="result-section"></div>
-            <div id="ecgResults" class="result-section"></div>
-            <div id="angiogramResults" class="result-section"></div>
-            <div id="bloodTestResults" class="result-section"></div>
-            <div id="overallAssessment"></div>
+        <div class="hero-content">
+            <div class="glass-card" id="card">
+                <h2 id="card-title">AI Heart Diagnosis</h2>
+                <p id="card-desc">Upload patient data for instant risk stratification.</p>
+                
+                <form id="triage-form" style="display:none; text-align:left;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <input type="number" id="age" placeholder="Age" required value="60">
+                        <input type="number" id="sex" placeholder="Sex (1=M, 0=F)" required value="1">
+                        <input type="number" id="cp" placeholder="CP Type (0-3)" required value="2">
+                        <input type="number" id="trestbps" placeholder="Rest BP" required value="140">
+                        <input type="number" id="chol" placeholder="Cholesterol" required value="250">
+                        <input type="number" id="thalach" placeholder="Max HR" required value="150">
+                    </div>
+                    <button type="submit" class="primary-btn">Analyze Risk</button>
+                </form>
+
+                <div id="result-view" style="display:none; margin-top:20px;">
+                    <h1 id="r-score" style="font-size:36px; margin-bottom:5px;"></h1>
+                    <p id="r-level" style="font-weight:600; font-size:18px; margin-bottom:15px;"></p>
+                    <p id="r-rec" style="font-size:14px; color:var(--text-secondary);"></p>
+                    <button class="primary-btn" onclick="resetForm()" style="margin-top:20px;">New Triage</button>
+                </div>
+
+                <button class="primary-btn" id="start-triage">Start Triage</button>
+            </div>
+            
+            <div id="alert-toast" class="alert-toast"></div>
         </div>
-    </div>
-    
+
+        <div class="footer-info">
+            <p>Autonomous ML diagnostic systems.</p>
+            <p class="subtext">Precision that secures patient health.</p>
+        </div>
+    </main>
+
     <script>
-        // Authentication logic
-        let generatedOTP;
-        
-        function sendOTP() {
-            let name = document.getElementById("name").value;
-            let phone = document.getElementById("phone").value;
-            if (!name || !phone) {
-                alert("Please enter valid details!");
-                return;
-            }
-            generatedOTP = Math.floor(100000 + Math.random() * 900000); // Mocked OTP
-            alert("Your OTP is: " + generatedOTP); // In real implementation, send via SMS
-            localStorage.setItem("doctor_name", name);
-            localStorage.setItem("doctor_phone", phone);
-            document.getElementById("signup-container").classList.add("hidden");
-            document.getElementById("otp-container").classList.remove("hidden");
-        }
-        
-        function verifyOTP() {
-            let otpInput = document.getElementById("otp").value;
-            if (otpInput == generatedOTP) {
-                alert("OTP Verified Successfully!");
-                document.getElementById("otp-container").classList.add("hidden");
-                document.getElementById("dashboard").classList.remove("hidden");
-                document.getElementById("userName").innerText = "Hello, Dr. " + localStorage.getItem("doctor_name") + "!";
-            } else {
-                alert("Incorrect OTP. Please try again.");
-            }
-        }
-        
-        function startDiagnosis() {
-            document.getElementById("dashboard").classList.add("hidden");
-            document.getElementById("diagnosis-container").classList.remove("hidden");
-            updateStepUI();
-        }
-        
-        // Diagnosis flow logic
-        let currentStep = 1;
-        let analysisData = {
-            patient: {},
-            ecg: {},
-            angiogram: {},
-            bloodTest: {}
+        // Clock
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('clock').innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }, 1000);
+
+        // UI Flow
+        const startBtn = document.getElementById('start-triage');
+        const form = document.getElementById('triage-form');
+        const resultView = document.getElementById('result-view');
+        const title = document.getElementById('card-title');
+        const desc = document.getElementById('card-desc');
+
+        startBtn.onclick = () => {
+            startBtn.style.display = 'none';
+            form.style.display = 'block';
+            title.innerText = 'Patient Metrics';
+            desc.style.display = 'none';
         };
-        
-        const steps = [
-            `<h2>Patient Info</h2>
-             <label>Name:</label><input type='text' id='name' placeholder='Enter name'>
-             <label>ID:</label><input type='text' id='id' placeholder='Enter ID'>
-             <label>Age:</label><input type='number' id='age' placeholder='Enter Age'>
-             <button class="btn save-btn" onclick="saveStepData()">Save</button>
-             <p id="saveMessage"></p>`,
-    
-            `<h2>Angiogram CT Scan</h2>
-             <p>Upload angiogram scan here.</p>
-             <input type='file' id='angiogramFile' accept='image/*, .pdf' onchange='previewFile(event, "angiogram")'>
-             <p id='angiogramPreview'></p>
-             <button class="btn save-btn" onclick="uploadFile('angiogram')">Upload</button>
-             <p id="angiogramUploadStatus"></p>`,
-    
-            `<h2>ECG Report</h2>
-             <p>Upload ECG report here.</p>
-             <input type='file' id='ecgFile' accept='image/*, .pdf' onchange='previewFile(event, "ecg")'>
-             <p id='ecgPreview'></p>
-             <button class="btn save-btn" onclick="uploadFile('ecg')">Upload</button>
-             <p id="ecgUploadStatus"></p>`,
-    
-            `<h2>Blood Test Report</h2>
-             <p>Upload blood test report here.</p>
-             <input type='file' id='bloodTestFile' accept='image/*, .pdf' onchange='previewFile(event, "bloodTest")'>
-             <p id='bloodTestPreview'></p>
-             <button class="btn save-btn" onclick="uploadFile('bloodTest')">Upload</button>
-             <p id="bloodTestUploadStatus"></p>`
-        ];
-    
-        function updateStepUI() {
-            document.getElementById("stepContent").innerHTML = steps[currentStep - 1];
-    
-            document.querySelectorAll(".step").forEach((el, index) => {
-                el.classList.toggle("active", index + 1 === currentStep);
-            });
-    
-            document.getElementById("analyseButton").style.display = currentStep === 4 ? 'block' : 'none';
-    
-            restoreData();
-        }
-    
-        function nextStep() {
-            if (currentStep < 4) {
-                currentStep++;
-                updateStepUI();
-            }
-        }
-    
-        function prevStep() {
-            if (currentStep > 1) {
-                currentStep--;
-                updateStepUI();
-            }
-        }
-    
-        function saveStepData() {
-            const nameField = document.getElementById("name");
-            const idField = document.getElementById("id");
-            const ageField = document.getElementById("age");
-    
-            if (nameField && idField && ageField) {
-                localStorage.setItem("patient_name", nameField.value);
-                localStorage.setItem("patient_id", idField.value);
-                localStorage.setItem("patient_age", ageField.value);
-                
-                analysisData.patient = {
-                    name: nameField.value,
-                    id: idField.value,
-                    age: ageField.value
-                };
-                
-                document.getElementById("saveMessage").innerText = "Patient data saved successfully ✅";
-                setTimeout(() => document.getElementById("saveMessage").innerText = "", 2000);
-            }
-        }
-    
-        function restoreData() {
-            if (document.getElementById("name") && currentStep === 1) {
-                document.getElementById("name").value = localStorage.getItem("patient_name") || "";
-                document.getElementById("id").value = localStorage.getItem("patient_id") || "";
-                document.getElementById("age").value = localStorage.getItem("patient_age") || "";
-            }
-    
-           // Restore file upload statuses
-["angiogram", "ecg", "bloodTest"].forEach(type => {
-    if (localStorage.getItem(`${type}_analyzed`) && document.getElementById(`${type}Preview`)) {
-        document.getElementById(`${type}Preview`).innerText = `Analyzed: ${localStorage.getItem(`${type}_filename`)}`;
-        document.getElementById(`${type}UploadStatus`).innerHTML = "✅ Analyzed successfully";
-    }
-});
 
+        window.resetForm = () => {
+            resultView.style.display = 'none';
+            form.style.display = 'block';
+            title.innerText = 'Patient Metrics';
+            desc.style.display = 'none';
         }
-    
-        function previewFile(event, type) {
-            const file = event.target.files[0];
-            if (file && document.getElementById('${type}Preview')) {
-                document.getElementById('${type}Preview').innerText = 'Selected: ${file.name'};
-            }
-        
-    
-        // This function simulates uploading a file to the backend
-        function uploadFile(type) {
-            const fileInput = document.getElementById('${type}File');
-            const statusElement = document.getElementById('${type}UploadStatus');
-            
-            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-                alert("Please select a file first!");
-                return;
-            }
-            
-            statusElement.innerHTML = `<span>Analyzing...</span><div class="loading"></div>`;
 
+        // API Integration
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            form.style.display = 'none';
+            title.innerText = 'Analyzing...';
             
-            // Simulate API call delay
-            setTimeout(() => {
-                // Simulate backend analysis results
-                let analysisResult;
-                
-                if (type === 'ecg') {
-                    analysisResult = {
-                        "Heart Rate": Math.floor(Math.random() * 40) + 60, // Random between 60-100
-                        "Rhythm": Math.random() > 0.7 ? "Tachycardia" : "Normal",
-                        "Risk": Math.random() > 0.7 ? "Potentially Dangerous" : "Normal"
-                    };
-                    analysisData.ecg = analysisResult;
-                } 
-                else if (type === 'angiogram') {
-                    const blockagePercentage = Math.floor(Math.random() * 80) + 10;
-                    let condition;
-                    
-                    if (blockagePercentage <= 25) condition = "Normal / Mild";
-                    else if (blockagePercentage <= 50) condition = "Moderate narrowing";
-                    else if (blockagePercentage <= 70) condition = "Significant stenosis";
-                    else condition = "Critical blockage";
-                    
-                    analysisResult = {
-                        "Condition": condition,
-                        "Blockage": blockagePercentage
-                    };
-                    analysisData.angiogram = analysisResult;
-                } 
-                else if (type === 'bloodTest') {
-                    const troponin = Math.random() * 0.8;
-                    const ldl = Math.random() * 150 + 50;
-                    
-                    analysisResult = {
-                        "Troponin": troponin.toFixed(2),
-                        "LDL": ldl.toFixed(1),
-                        "Risk": troponin > 0.4 ? "High risk of myocardial damage" : "Normal",
-                        "LDL Risk": ldl > 100 ? "High LDL level" : "Normal"
-                    };
-                    analysisData.bloodTest = analysisResult;
-                }
-                
-                localStorage.setItem('${type}_analyzed', 'true');
-                localStorage.setItem('${type}_filename', fileInput.files[0].name);
-                localStorage.setItem('${type}_results', JSON.stringify(analysisResult));
-                
-                statusElement.innerHTML = "✅ Analyzed successfully";
-            }, 2000);
-        }
-        
-        function analyzeAllData() {
-            // Check if all data is available
-            if (!localStorage.getItem("ecg_analyzed") || 
-                !localStorage.getItem("angiogram_analyzed") || 
-                !localStorage.getItem("bloodTest_analyzed")) {
-                alert("Please upload and analyze all required reports first!");
-                return;
-            }
-            
-            // Display the results
-            document.getElementById("results").classList.remove("hidden");
-            document.getElementById("analyseButton").style.display = "none";
-            
-            // Patient Info
-            const patientInfo = document.getElementById("patientInfo");
-            patientInfo.innerHTML = `
-                <h3>Patient Information</h3>
-                <p><strong>Name:</strong> ${analysisData.patient.name || localStorage.getItem("patient_name")}</p>
-                <p><strong>ID:</strong> ${analysisData.patient.id || localStorage.getItem("patient_id")}</p>
-                <p><strong>Age:</strong> ${analysisData.patient.age || localStorage.getItem("patient_age")}</p>
-            `;
-            
-            // ECG Results
-            const ecgData = analysisData.ecg || JSON.parse(localStorage.getItem("ecg_results"));
-            const ecgResults = document.getElementById("ecgResults");
-            ecgResults.innerHTML = `
-                <h3>ECG Analysis</h3>
-                <p><strong>Heart Rate:</strong> ${ecgData["Heart Rate"]} bpm</p>
-                <p><strong>Rhythm:</strong> ${ecgData["Rhythm"]}</p>
-                <p><strong>Risk Assessment:</strong> <span class="${ecgData["Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${ecgData["Risk"]}</span></p>
-            `;
-            
-            // Angiogram Results
-            const angiogramData = analysisData.angiogram || JSON.parse(localStorage.getItem("angiogram_results"));
-            const angiogramResults = document.getElementById("angiogramResults");
-            angiogramResults.innerHTML = `
-                <h3>Angiogram Analysis</h3>
-                <p><strong>Condition:</strong> ${angiogramData["Condition"]}</p>
-                <p><strong>Blockage:</strong> ${angiogramData["Blockage"]}%</p>
-                <p><strong>Risk Assessment:</strong> <span class="${angiogramData["Blockage"] <= 50 ? "normal-risk" : "high-risk"}">${angiogramData["Blockage"] > 70 ? "High Risk" : angiogramData["Blockage"] > 50 ? "Moderate Risk" : "Low Risk"}</span></p>
-            `;
-            
-            // Blood Test Results
-            const bloodData = analysisData.bloodTest || JSON.parse(localStorage.getItem("bloodTest_results"));
-            const bloodTestResults = document.getElementById("bloodTestResults");
-            bloodTestResults.innerHTML = `
-                <h3>Blood Test Analysis</h3>
-                <p><strong>Troponin:</strong> ${bloodData["Troponin"]} ng/mL</p>
-                <p><strong>LDL Cholesterol:</strong> ${bloodData["LDL"]} mg/dL</p>
-                <p><strong>Troponin Risk:</strong> <span class="${bloodData["Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${bloodData["Risk"]}</span></p>
-                <p><strong>LDL Risk:</strong> <span class="${bloodData["LDL Risk"] === "Normal" ? "normal-risk" : "high-risk"}">${bloodData["LDL Risk"]}</span></p>
-            `;
-            
-            // Overall Assessment
-            const overallRisk = calculateOverallRisk(ecgData, angiogramData, bloodData);
-            const overallAssessment = document.getElementById("overallAssessment");
-            overallAssessment.innerHTML = `
-                <h3>Overall Assessment</h3>
-                <p><strong>Risk Level:</strong> <span class="${overallRisk.level === "Low" ? "normal-risk" : "high-risk"}">${overallRisk.level} Risk</span></p>
-                <p><strong>Recommendation:</strong> ${overallRisk.recommendation}</p>
-                <p><strong>Follow-up:</strong> ${overallRisk.followUp}</p>
-            `;
-        }
-        
-        function calculateOverallRisk(ecgData, angiogramData, bloodData) {
-            // Calculate risk score based on all factors
-            let riskScore = 0;
-            
-            // ECG factors
-            if (ecgData["Risk"] !== "Normal") riskScore += 2;
-            if (ecgData["Rhythm"] === "Tachycardia") riskScore += 1;
-            
-            // Angiogram factors
-            if (angiogramData["Blockage"] > 70) riskScore += 3;
-            else if (angiogramData["Blockage"] > 50) riskScore += 2;
-            else if (angiogramData["Blockage"] > 25) riskScore += 1;
-            
-            // Blood test factors
-            if (bloodData["Risk"] !== "Normal") riskScore += 3;
-            if (bloodData["LDL Risk"] !== "Normal") riskScore += 1;
-            
-            // Determine overall risk level
-            let riskLevel, recommendation, followUp;
-            
-            if (riskScore >= 6) {
-                riskLevel = "High";
-                recommendation = "Immediate medical intervention is recommended. Consider cardiac catheterization and possible stent placement.";
-                followUp = "Immediate cardiology consultation and hospital admission.";
-            } else if (riskScore >= 3) {
-                riskLevel = "Moderate";
-                recommendation = "Medical management with close monitoring. Consider medication adjustments and lifestyle modifications.";
-                followUp = "Schedule follow-up with cardiology within 1-2 weeks.";
-            } else {
-                riskLevel = "Low";
-                recommendation = "Continue current medical management. Emphasize heart-healthy lifestyle.";
-                followUp = "Regular check-up in 3-6 months.";
-            }
-            
-            return {
-                level: riskLevel,
-                recommendation: recommendation,
-                followUp: followUp
+            const payload = {
+                patient_record_id: "test-patient",
+                doctor_uid: "test-doc",
+                hospital_id: "hosp-1",
+                age: +document.getElementById('age').value,
+                sex: +document.getElementById('sex').value,
+                cp: +document.getElementById('cp').value,
+                trestbps: +document.getElementById('trestbps').value,
+                chol: +document.getElementById('chol').value,
+                fbs: 0, restecg: 1, 
+                thalach: +document.getElementById('thalach').value, 
+                exang: 1, oldpeak: 2.0, slope: 1, ca: 0, thal: 2
             };
-        }
-        
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if already logged in
-            if (localStorage.getItem("doctor_name") && localStorage.getItem("doctor_phone")) {
-                document.getElementById("signup-container").classList.add("hidden");
-                document.getElementById("dashboard").classList.remove("hidden");
-                document.getElementById("userName").innerText = "Hello, Dr. " + localStorage.getItem("doctor_name") + "!";
+
+            try {
+                const res = await fetch('http://localhost:8000/api/v1/triage/predict', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                title.innerText = 'Diagnosis Complete';
+                document.getElementById('r-score').innerText = (data.risk_score * 100).toFixed(1) + '%';
+                const levelEl = document.getElementById('r-level');
+                levelEl.innerText = data.risk_level + ' Risk';
+                levelEl.style.color = data.risk_level === 'High' || data.risk_level === 'Critical' ? '#ff3b30' : (data.risk_level === 'Moderate' ? '#ff9500' : '#34c759');
+                document.getElementById('r-rec').innerText = data.recommendation;
+                resultView.style.display = 'block';
+            } catch(e) {
+                title.innerText = 'Error';
+                alert('API Error: Is the server running?');
+                resetForm();
             }
+        };
+
+        // Real-Time SSE Alerts
+        const evtSource = new EventSource("http://localhost:8000/api/v1/alerts/stream");
+        evtSource.addEventListener("critical_alert", (e) => {
+            const data = JSON.parse(e.data);
+            const toast = document.getElementById('alert-toast');
+            toast.innerText = data.message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
         });
     </script>
 </body>
